@@ -25,7 +25,9 @@
           borderColor,
           pointBorderColor,
           pointBackgroundColor,
-          backgroundColor
+          backgroundColor,
+          type,
+          barThickness
         } = this.chartColors;
     
         this.renderChart(
@@ -38,7 +40,9 @@
                 borderColor: borderColor,
                 pointBorderColor: pointBorderColor,
                 pointBackgroundColor: pointBackgroundColor,
-                backgroundColor: backgroundColor
+                backgroundColor: backgroundColor,
+                type : type,
+                barThickness : barThickness
               }
             ]
           },

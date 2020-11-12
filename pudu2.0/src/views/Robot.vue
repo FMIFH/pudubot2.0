@@ -45,12 +45,14 @@ export default {
                 borderColor: "#077187",
                 pointBorderColor: "#0E1428",
                 pointBackgroundColor: "#AFD6AC",
-                backgroundColor: "#74A57F"
+                backgroundColor: "#74A57F",
+                type: "bar",
+                barThickness: 30
             },
             robotPositionsArray : [],
             chartOptions: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
             }
 
         }
@@ -95,7 +97,7 @@ export default {
 
     mounted() {
         this.getRobots(),
-        this.groupByTime("day");
+        this.groupByTime("hour");
     }    
 }
 </script>
