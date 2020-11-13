@@ -6,7 +6,7 @@
         <h3> Total Distance: {{robotTotalDistance}}</h3>
         
         <div class="row mt-5" v-if="robotDistanceArray.length > 0">
-            <div class="col">
+            <div class="col">  
               <h2 class="text-center">Distance</h2>
               <line-chart
                 :chartData="robotDistanceArray"
@@ -15,6 +15,11 @@
                 label="Distance"
               ></line-chart>
             </div>
+        </div>
+        <div>
+            <button v-on:click='groupByTime("minute")'>MINUTE</button>
+            <button v-on:click='groupByTime("hour")'>HOUR</button>
+            <button v-on:click='groupByTime("day")'>DAY</button>
         </div>
         </div>
     </div>
@@ -69,6 +74,8 @@ export default {
         },
         
         groupByTime : async function(time){
+            this.robotTotalDistance = 0;
+            this.robotDistanceArray = [];
             const data = {
                 "timedis" : time,
                 "robot" : this.robotid
