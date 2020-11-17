@@ -53,7 +53,7 @@ export default {
   z-index: 1; /* Stay on top */
   top: 0;
   left: 0;
-  background-color: gray; /* Black*/
+  background-color: #2140AD; /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 60px; /* Place content 60px from the top */
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
@@ -65,7 +65,7 @@ export default {
   padding: 20px 10px 10px 32px;
   text-decoration: none;
   font-size: 25px;
-  color: white;
+  color: whitesmoke;
   display: block;
   transition: 0.3s;
 }
@@ -88,18 +88,14 @@ export default {
 .openbtn {
   font-size: 20px;
   cursor: pointer;
-  background-color: gray;
-  color: white;
+  background-color: #2140AD;
+  color: whitesmoke;
   padding: 10px 15px;
   border: none;
   position:absolute;
   top:0;
   left:0;
   border-radius: 0px 5px 5px 0px;
-}
-
-.openbtn:hover {
-  background-color: #444;
 }
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */

@@ -46,7 +46,7 @@ export default {
 
 
 h1{
-    color: navy;
+    color: #2140AD;
 }
 
 .RobotInfo{

@@ -54,6 +54,7 @@ form{
     margin-right: auto;
     text-align: left;
     flex-direction: column;
+    color: #2140AD;
 }
 
 </style>

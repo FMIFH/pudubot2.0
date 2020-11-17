@@ -17,10 +17,12 @@
         },
         chartColors: {
           type: Object
+        },
+        chartLabels:{
+            type: Array
         }
       },
       mounted() {
-        const dates = this.chartData.map(d => d.date);
         const totals = this.chartData.map(d => d.total);
 
         const {
@@ -34,7 +36,7 @@
     
         this.renderChart(
           {
-            labels: dates,
+            labels: this.chartLabels,
             datasets: [
               {
                 label: this.label,

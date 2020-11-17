@@ -31,7 +31,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: black;
+    color: 2140AD;
     height: 100vh;
     background-image: url("../assets/background.png");
 }
