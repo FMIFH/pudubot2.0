@@ -30,6 +30,11 @@ const routes = [
     name: 'Robot',
     component: () => import('../views/Robot.vue')
   },
+  {
+    path: '/clients/register',
+    name: 'ClientRegister',
+    component: () => import('../views/RegisterClient.vue')
+  },
 ]
 
 const router = new VueRouter({
