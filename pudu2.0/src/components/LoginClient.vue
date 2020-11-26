@@ -1,46 +1,58 @@
 <template>
-    <div id="registerRobot">
-        <form class="registerRobot_newRegist" @submit="registerRobot">
-            <div>
-                <label for="newRobot"><h2><strong>Register New Robot</strong></h2></label>
-                <textarea id="newRobot" cols="20" rows="1" v-model="newRobotId"></textarea>
-            </div>
-            
-            <button>Submit</button>
-        </form>
+    
+        <div id="loginUser">
+            <form class="loginUser_class" @submit.prevent="loginUser">
+                <h2> <label for="newRobot"><strong>Login</strong></label>
+                </h2>
+                <div>
+                    <label for="userEmail">Email</label>
+                    <textarea id="userEmail" cols="20" rows="1" v-model="userEmail"></textarea>
+                </div>
+                <div>
+                    <label for="userPassword">Password</label>
+                    <textarea id="userPassword" cols="20" rows="1" v-model="userPassword"></textarea>
+                </div>
+
+                <button>Submit</button>
+            </form>
+        
+        <p></p>
+        <router-link :to="{ name: 'ClientRegister'}">
+            Register
+        </router-link>
     </div>
+    
 </template>
 
 <script>
+    import bcrypt from 'bcryptjs'
+
     export default {
-        name: 'RegisterRobot',
         data() {
             return {
-                newRobotId: '',
+                userEmail: '',
+                userPassword: '',
                 api: 'http://microsegur.ddns.net:3006'
             }
         },
 
         methods: {
-            registerRobot: async function () {
-                if (this.newRobotId) {
-                    const data = {
-                        "robotid": this.newRobotId
-                    };
+            loginUser: async function () {
+                const response = await fetch(this.api + `/rentee?email=eq.${this.userEmail}`);
+                const responseJson = await response.json();
+                var password = "";
+                responseJson.forEach(d => {
+                    password = d.password;
+                });
+                bcrypt.compare(this.userPassword, password, function (err, res) {
+                    if (res === true) {
+                        alert("All good")
 
-                    console.log(data);
-                    await fetch(this.api + '/robot',
-                        {
-                            headers: {
-                                "content-type": "application/json"
-                            },
-                            body: JSON.stringify(data),
-                            method: "POST"
-                        }).then(data => { return data.json })
-                        .then(res => { console.log(res) })
-                        .catch(error => console.log(error));
-                }
-                location.reload();
+                    } else {
+                        alert("Wrong email and/or password")
+                    }
+                });
+
             }
         }
     }
@@ -48,7 +60,7 @@
 
 
 <style>
-    .registerRobot_newRegist {
+    .loginUser_class {
         font-family: 'Open Sans Condensed', arial, sans;
         width: 500px;
         padding: 30px;
@@ -60,7 +72,7 @@
 
     }
 
-    .registerRobot_newRegist h2 {
+    .loginUser_class h2 {
         background: #2140AD;
         text-transform: uppercase;
         font-family: 'Open Sans Condensed', sans-serif;
@@ -71,8 +83,8 @@
         margin: -30px -30px 30px -30px;
     }
 
-    .registerRobot_newRegist textarea,
-    .registerRobot_newRegist select {
+    .loginUser_class textarea,
+    .loginUser_class select {
         box-sizing: border-box;
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -88,12 +100,12 @@
         height: 45px;
     }
 
-    .registerRobot_newRegist textarea {
+    .loginUser_class textarea {
         resize: none;
         overflow: hidden;
     }
 
-    .registerRobot_newRegist button {
+    .loginUser_class button {
         -moz-box-shadow: inset 0px 1px 0px 0px #2140AD;
         -webkit-box-shadow: inset 0px 1px 0px 0px #2140AD;
         box-shadow: inset 0px 1px 0px 0px #2140AD;
@@ -109,7 +121,7 @@
         text-transform: uppercase;
     }
 
-    .registerRobot_newRegist button:hover {
+    .loginUser_class button:hover {
         background: linear-gradient(to bottom, #254ddfc7 5%, #254ddf 100%);
         background-color: #254ddfc7;
     }
