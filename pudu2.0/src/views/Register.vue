@@ -23,7 +23,7 @@
             <button>Submit</button>
         </form>
         <p></p>
-        <router-link :to="{ name: 'Clients'}">
+        <router-link :to="{ name: 'Login'}">
             Go Back 
        </router-link>
     </div>
@@ -43,7 +43,6 @@
                 newUserPhone: '',
                 newUserEmail: '',
                 newUserPassword: '',
-                api: 'http://microsegur.ddns.net:3006'
             }
         },
 
@@ -63,7 +62,7 @@
                         "password": hashed
                     };
 
-                    await fetch(this.api + '/rentee',
+                    await fetch(process.env.VUE_APP_API + '/rentee',
                         {
                             headers: {
                                 "content-type": "application/json"

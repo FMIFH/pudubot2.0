@@ -1,58 +1,72 @@
 <template>
-    
-        <div id="loginUser">
-            <form class="loginUser_class" @submit.prevent="loginUser">
-                <h2> <label for="newRobot"><strong>Login</strong></label>
-                </h2>
-                <div>
-                    <label for="userEmail">Email</label>
-                    <textarea id="userEmail" cols="20" rows="1" v-model="userEmail"></textarea>
-                </div>
-                <div>
-                    <label for="userPassword">Password</label>
-                    <textarea id="userPassword" cols="20" rows="1" v-model="userPassword"></textarea>
-                </div>
+    <div id="loginUser">
+        <form class="loginUser_class" @submit.prevent="loginUser">
+            <h2> <label for="newRobot"><strong>Login</strong></label>
+            </h2>
+            <div>
+                <label for="userEmail">Email</label>
+                <textarea id="userEmail" cols="20" rows="1" v-model="userEmail"></textarea>
+            </div>
+            <div>
+                <label for="userPassword">Password</label>
+                <textarea id="userPassword" cols="20" rows="1" v-model="userPassword"></textarea>
+            </div>
 
-                <button>Submit</button>
-            </form>
-        
+            <button>Submit</button>
+        </form>
+
         <p></p>
-        <router-link :to="{ name: 'ClientRegister'}">
+        <router-link :to="{ name: 'Register'}">
             Register
         </router-link>
     </div>
-    
+
 </template>
 
 <script>
     import bcrypt from 'bcryptjs'
-
+    import jwt from 'jsonwebtoken'
+    
     export default {
         data() {
             return {
                 userEmail: '',
                 userPassword: '',
-                api: 'http://microsegur.ddns.net:3006'
             }
         },
 
         methods: {
-            loginUser: async function () {
-                const response = await fetch(this.api + `/rentee?email=eq.${this.userEmail}`);
+            loginUser: async function() {
+                const response = await fetch(process.env.VUE_APP_API + `/rentee?email=eq.${this.userEmail}`);
                 const responseJson = await response.json();
-                var password = "";
+                var password = '';
+                var username = '';
                 responseJson.forEach(d => {
                     password = d.password;
-                });
-                bcrypt.compare(this.userPassword, password, function (err, res) {
-                    if (res === true) {
-                        alert("All good")
-
-                    } else {
-                        alert("Wrong email and/or password")
-                    }
+                    username = d.renteename;
                 });
 
+                let success = await this.comparePasswords(password);
+                console.log(success)
+                if(success === false){
+                    throw ''
+                }
+                
+                const user = {name : username};
+                const accessToken = jwt.sign(user, process.env.VUE_APP_ACCESS_TOKEN_SECRET)
+                console.log(accessToken)
+            },
+
+            comparePasswords: function(password) {
+                return new Promise((resolve, reject) => {
+                    bcrypt.compare(this.userPassword, password, (err, res) => {
+                        if (err) {
+                            return reject(err);
+                        } else {
+                            return resolve(res);
+                        }
+                    })
+                })
             }
         }
     }

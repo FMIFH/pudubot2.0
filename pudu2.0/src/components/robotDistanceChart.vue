@@ -35,7 +35,6 @@
 
         data(){
             return{
-                api : 'http://microsegur.ddns.net:3006',
                 robotTotalDistance : 0,
                 robotDistanceArray : [],
                 displayRobotDistanceArray : [],
@@ -63,7 +62,7 @@
                     "robot" : this.robotid
                 };
 
-                const response = await fetch(this.api +'/rpc/distancepertime',
+                const response = await fetch(process.env.VUE_APP_API +'/rpc/distancepertime',
                 {
                     headers: {
                             "content-type":"application/json"

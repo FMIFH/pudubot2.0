@@ -17,7 +17,6 @@
         data() {
             return {
                 newRobotId: '',
-                api: 'http://microsegur.ddns.net:3006'
             }
         },
 
@@ -29,7 +28,7 @@
                     };
 
                     console.log(data);
-                    await fetch(this.api + '/robot',
+                    await fetch(process.env.VUE_APP_API + '/robot',
                         {
                             headers: {
                                 "content-type": "application/json"

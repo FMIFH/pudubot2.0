@@ -18,13 +18,12 @@ export default {
     data(){
         return{
             robot: {},
-            api : 'http://microsegur.ddns.net:3006'
         }
     },
 
     methods: {
         getRobots : async function() {
-            const response = await fetch(this.api+'/robot');
+            const response = await fetch(process.env.VUE_APP_API+'/robot');
             if(response.ok){
                 const responseJson = await response.json();
                 this.robot = responseJson;

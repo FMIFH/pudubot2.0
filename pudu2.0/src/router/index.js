@@ -21,9 +21,9 @@ const routes = [
     component: () => import('../views/Robots.vue')
   },
   {
-    path: '/clients',
-    name: 'Clients',
-    component: () => import('../views/Clients.vue')
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/robots/:robotid',
@@ -31,9 +31,9 @@ const routes = [
     component: () => import('../views/Robot.vue')
   },
   {
-    path: '/clients/register',
-    name: 'ClientRegister',
-    component: () => import('../views/RegisterClient.vue')
+    path: '/register',
+    name: 'Register',
+    component: () => import('../views/Register.vue')
   },
 ]
 

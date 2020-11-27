@@ -6,6 +6,7 @@
       <router-link :to="{name:'Robots'}">Robots</router-link>
       <router-link :to="{name: 'Clients'}">Clients</router-link>
       <router-link :to="{name:'Dashboards'}">Dashboards</router-link>
+      <router-link :to="{name:'Login'}">Login</router-link>
     </div>
     
     <div id="main">
