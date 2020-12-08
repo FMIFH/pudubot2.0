@@ -4,9 +4,7 @@
       <a href="javascript:void(0)" class="closebtn" v-on:click="closeNav()">&times;</a>
       <router-link :to="{name:'Home'}">Home</router-link>
       <router-link :to="{name:'Robots'}">Robots</router-link>
-      <router-link :to="{name: 'Clients'}">Clients</router-link>
-      <router-link :to="{name:'Dashboards'}">Dashboards</router-link>
-      <router-link :to="{name:'Login'}">Login</router-link>
+      <router-link :to="{name:'Account'}">Account</router-link>
     </div>
     
     <div id="main">
@@ -41,6 +39,7 @@ export default {
       document.getElementById("mySidebar").style.width = "0";
       document.getElementById("main").style.marginLeft = "0";
     } 
+    
   }
 }
 </script>

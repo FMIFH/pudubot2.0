@@ -27,7 +27,6 @@
         
         data(){
             return{
-                api : 'http://microsegur.ddns.net:3006',
                 robotPositionsArray : [],
                 positionChartColors: {
                     borderColor: "#9BA0B3",

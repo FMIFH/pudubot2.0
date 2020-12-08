@@ -74,7 +74,7 @@
                         .then(res => { console.log(res) })
                         .catch(error => console.log(error));
                     alert("Account Created")
-                    this.$router.push({ name: 'Clients' })
+                    this.$router.push({ name: 'Login' })
                 } else {
                     alert("All credencials are mandatory")
                 }

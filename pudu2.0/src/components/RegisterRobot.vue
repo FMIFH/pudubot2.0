@@ -1,5 +1,5 @@
 <template>
-    <div id="registerRobot">
+    <div v-if="isAdmin" id="registerRobot">
         <form class="registerRobot_newRegist" @submit="registerRobot">
             <div>
                 <label for="newRobot"><h2><strong>Register New Robot</strong></h2></label>
@@ -40,6 +40,12 @@
                         .catch(error => console.log(error));
                 }
                 location.reload();
+            }
+        },
+
+        computed: {
+            isAdmin() {
+                return localStorage.getItem('level') === "true";
             }
         }
     }

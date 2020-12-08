@@ -32,6 +32,7 @@
             return {
                 userEmail: '',
                 userPassword: '',
+                token: localStorage.getItem('access_token') || null
             }
         },
 
@@ -40,10 +41,12 @@
                 const response = await fetch(process.env.VUE_APP_API + `/rentee?email=eq.${this.userEmail}`);
                 const responseJson = await response.json();
                 var password = '';
-                var username = '';
+                var renteeid = '';
+                var level = ''
                 responseJson.forEach(d => {
                     password = d.password;
-                    username = d.renteename;
+                    renteeid = d.renteeid;
+                    level = d.admin
                 });
 
                 let success = await this.comparePasswords(password);
@@ -52,9 +55,12 @@
                     throw ''
                 }
                 
-                const user = {name : username};
+                const user = {id : renteeid};
                 const accessToken = jwt.sign(user, process.env.VUE_APP_ACCESS_TOKEN_SECRET)
-                console.log(accessToken)
+                localStorage.setItem('access_token',accessToken);
+                localStorage.setItem('userId', renteeid);
+                localStorage.setItem('level', level);
+                this.$router.push({name: 'Account'});
             },
 
             comparePasswords: function(password) {
