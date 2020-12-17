@@ -69,17 +69,16 @@ CREATE FUNCTION distancepertime (
 	begining TIMESTAMP
 ) 
 	RETURNS TABLE (
-    	x DOUBLE PRECISION,
-    	y DOUBLE PRECISION,
+        ts TIMESTAMP
     	distance DOUBLE PRECISION
 	)
 	LANGUAGE plpgsql
 AS $$
     BEGIN
 		RETURN QUERY
-        	SELECT x,y,distance
-        	FROM robotposition
-        	WHERE ts >= begining AND robotid = robot
-        	GROUP BY DATE(timedis);
+            SELECT DATE_TRUNC(timedis,robotposition.ts)  AS  groupedTime, SUM(robotposition.distance)
+            FROM robotposition
+            WHERE robotposition.robotid=robot and robotposition.ts > begining
+            GROUP BY groupedTime;
     END;
 $$

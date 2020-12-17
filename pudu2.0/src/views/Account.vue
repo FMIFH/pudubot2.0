@@ -31,7 +31,6 @@
             loggedIn() {
                 try {
                     var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
-                    console.log(decoded);
                     return decoded.id == localStorage.getItem('userid')
                 } catch(err){
                     return false
@@ -46,7 +45,7 @@
             },
 
             async getName() {
-                var userId = localStorage.getItem('userId');
+                var userId = localStorage.getItem('userid');
                 const response = await fetch(process.env.VUE_APP_API + `/rentee?renteeid=eq.${userId}`);
                 if (response.ok) {
                     const responseJson = await response.json();
@@ -59,10 +58,11 @@
         },
 
         mounted() {
-            this.getName()
             if (!this.loggedIn()) {
                 this.$router.push({ name: 'Login' });
             }
+            this.getName()
+            
         }
     }
 

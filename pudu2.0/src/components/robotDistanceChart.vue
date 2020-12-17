@@ -59,7 +59,8 @@
                 this.robotDistanceArray = [];
                 const data = {
                     "timedis" : time,
-                    "robot" : this.robotid
+                    "robot" : this.robotid,
+                    "begining" : 1
                 };
 
                 const response = await fetch(process.env.VUE_APP_API +'/rpc/distancepertime',
