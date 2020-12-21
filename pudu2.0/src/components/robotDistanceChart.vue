@@ -60,7 +60,7 @@
                 const data = {
                     "timedis" : time,
                     "robot" : this.robotid,
-                    "begining" : 1
+                    "begining" : somedate  // TODO : begining date
                 };
 
                 const response = await fetch(process.env.VUE_APP_API +'/rpc/distancepertime',
