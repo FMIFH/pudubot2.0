@@ -17,10 +17,16 @@
 </template>
 
 <script>
+    import jwt from 'jsonwebtoken'
+
+
     export default {
+
+        
         data() {
             return {
                 robot: {},
+                token : localStorage.getItem('access_token') || null
             }
         },
 
@@ -40,7 +46,11 @@
 
         computed: {
             isAdmin: function() {
-                return localStorage.getItem('level') === "true";
+                if(this.token == null){
+                    return false;
+                }
+                var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
+                return decoded.level == true;
             }
         },
 

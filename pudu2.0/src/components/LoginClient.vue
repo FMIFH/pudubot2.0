@@ -55,11 +55,10 @@
                     throw ''
                 }
                 
-                const user = {id : renteeid};
+                const user = {id : renteeid,level : level};
                 const accessToken = jwt.sign(user, process.env.VUE_APP_ACCESS_TOKEN_SECRET)
                 localStorage.setItem('access_token',accessToken);
-                localStorage.setItem('userid', renteeid);
-                localStorage.setItem('level', level);
+
 
                 this.$router.push({name: 'Account'});
             },

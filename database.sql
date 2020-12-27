@@ -25,7 +25,7 @@ CREATE TABLE dropzone(
 );
 
 CREATE TABLE delivery (
-    deliverynumber INTEGER,
+    deliverynumber INTEGER NOT NULL,
     robotid VARCHAR(30) NOT NULL ,
     dzid INTEGER NOT NULL,
     deliveryRequest TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -47,18 +47,19 @@ CREATE TABLE robotposition (
 
 
 CREATE TABLE groupRobots (
-    groupid INTEGER,
+    groupid INTEGER NOT NULL,
     robotid VARCHAR(30) NOT NULL,
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (robotid) REFERENCES robot(robotid)
 );
 
 CREATE TABLE rents (
-    renteeid INTEGER,
-    groupid INTEGER,
+    renteeid INTEGER NOT NULL,
+    groupid SERIAL NOT NULL,
     rentStart TIMESTAMP NOT NULL,
-    rentEnd TIMESTAMP NOT NULL,
-    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    rentEnd TIMESTAMP,
+    ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (groupid)
 );
 
 --------------------------------------------------
@@ -80,5 +81,25 @@ AS $$
             FROM robotposition
             WHERE robotposition.robotid=robot and robotposition.ts > begining
             GROUP BY groupedTime;
+    END;
+$$
+
+
+
+CREATE PROCEDURE rent(
+    @rentee INTEGER,
+    @numberRobots INTEGER,
+    @begining TIMESTAMP
+)   
+AS$$
+    BEGIN
+        DECLARE @groupidentifier INTEGER;
+        SET @groupidentifier = INSERT INTO rents (renteeid,rentstart) VALUES (@rentee,@begining) RETURNING rents.groupid ;
+        INSERT INTO grouprobots (groupid, robotid) VALUES 
+        
+        SELECT robotid
+        FROM robot
+        WHERE available = true
+        LIMIT @numberRobots;
     END;
 $$

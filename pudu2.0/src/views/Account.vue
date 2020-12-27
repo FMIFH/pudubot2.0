@@ -4,6 +4,9 @@
         <div>
             <h1>Olá {{rentee.renteename}}</h1>
         </div>
+        <div class = "rent">
+            <button v-on:click="rentRobots"> Rent Robots</button>
+        </div>
         <div class="bottom">
             <button v-on:click="logOut">Log Out</button>
         </div>
@@ -31,7 +34,7 @@
             loggedIn() {
                 try {
                     var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
-                    return decoded.id == localStorage.getItem('userid')
+                    return decoded.id != null
                 } catch(err){
                     return false
                 }
@@ -39,13 +42,22 @@
 
             logOut() {
                 localStorage.removeItem('access_token');
-                localStorage.removeItem('level');
-                localStorage.removeItem('userId');
                 this.$router.push({ name: "Home" });
             },
 
+            rentRobots(){
+                var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
+                var userId = decoded.id;
+                
+
+
+                this.$router.push({ name: "Rent", params: { renteeid : userId}});
+
+            },
+
             async getName() {
-                var userId = localStorage.getItem('userid');
+                var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
+                var userId = decoded.id;
                 const response = await fetch(process.env.VUE_APP_API + `/rentee?renteeid=eq.${userId}`);
                 if (response.ok) {
                     const responseJson = await response.json();
