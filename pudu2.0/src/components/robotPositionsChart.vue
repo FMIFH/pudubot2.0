@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div class="row mt-6" v-if="robotPositionsArray.length > 0">
         <div class="col">  
           <h2 class="text-center">Positions</h2>

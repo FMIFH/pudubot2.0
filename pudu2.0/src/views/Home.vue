@@ -28,6 +28,6 @@ body {
   text-align: center;
   color: #575963;
   height: 100vh;
-  background-image: url("../assets/background.png");
+  background-image: url("../assets/background.png") !important;
 }
 </style>  

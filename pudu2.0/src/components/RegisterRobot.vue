@@ -1,6 +1,6 @@
 <template>
     <div v-if="isAdmin" id="registerRobot">
-        <form class="registerRobot_newRegist" @submit="registerRobot">
+        <form class="registerRobot_newRegist" @submit.prevent="registerRobot">
             <div>
                 <label for="newRobot"><h2><strong>Register New Robot</strong></h2></label>
                 <textarea id="newRobot" cols="20" rows="1" v-model="newRobotId"></textarea>
@@ -12,11 +12,15 @@
 </template>
 
 <script>
+    import jwt from 'jsonwebtoken'
+
+
     export default {
         name: 'RegisterRobot',
         data() {
             return {
                 newRobotId: '',
+                token : localStorage.getItem('access_token') || null
             }
         },
 
@@ -45,8 +49,11 @@
 
         computed: {
             isAdmin() {
-                return localStorage.getItem('level') === "true";
-            }
+                if(this.token == null){
+                    return false;
+                }
+                var decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
+                return decoded.level == true;            }
         }
     }
 </script>

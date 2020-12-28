@@ -1,6 +1,6 @@
 CREATE TABLE robot (
     robotid VARCHAR(30),
-    available BOOL NOT NULL,
+    available BOOL NOT NULL DEFAULT true,
     ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(robotid)
 );
@@ -85,21 +85,27 @@ AS $$
 $$
 
 
-
 CREATE PROCEDURE rent(
-    @rentee INTEGER,
-    @numberRobots INTEGER,
-    @begining TIMESTAMP
+    rentee INTEGER,
+    numberRobots INTEGER,
+    begining TIMESTAMP
 )   
-AS$$
+LANGUAGE PLPGSQL
+AS $$
+    
+   	DECLARE 
+        groupidentifier INTEGER;
+        robotCursor CURSOR FOR SELECT robotid FROM robot WHERE available = true LIMIT numberRobots;
+		currentRobot VARCHAR;
     BEGIN
-        DECLARE @groupidentifier INTEGER;
-        SET @groupidentifier = INSERT INTO rents (renteeid,rentstart) VALUES (@rentee,@begining) RETURNING rents.groupid ;
-        INSERT INTO grouprobots (groupid, robotid) VALUES 
-        
-        SELECT robotid
-        FROM robot
-        WHERE available = true
-        LIMIT @numberRobots;
+        WITH grouptable AS (
+		 INSERT INTO rents (renteeid,rentstart) VALUES (rentee,begining) RETURNING rents.groupid
+		)SELECT groupid INTO groupidentifier from grouptable;
+        OPEN robotCursor;
+        FETCH FROM robotCursor INTO currentRobot;
+			INSERT INTO grouprobots (robotid,groupid) values (currentRobot, groupidentifier);
+			UPDATE robot SET available = false where robotid = currentRobot;
+		CLOSE robotCursor;
+		RETURN 1;
     END;
 $$

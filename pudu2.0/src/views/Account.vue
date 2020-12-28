@@ -10,17 +10,21 @@
         <div class="bottom">
             <button v-on:click="logOut">Log Out</button>
         </div>
+
+        <ListRents></ListRents>
     </div>
 </template>
 
 <script>
     import Sidebar from '../components/sidebar.vue'
     import jwt from 'jsonwebtoken'
+    import ListRents from '../components/ListRents.vue'
 
     export default {
 
         components: {
-            Sidebar
+            Sidebar,
+            ListRents
         },
 
         data() {
@@ -116,4 +120,5 @@
         background: linear-gradient(to bottom, #254ddfc7 5%, #254ddf 100%);
         background-color: #254ddfc7;
     }
+    
 </style>

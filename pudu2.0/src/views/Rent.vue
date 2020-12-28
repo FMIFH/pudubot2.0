@@ -1,20 +1,24 @@
 <template>
     <div>
-        <form>
-            <form class="registerRent_newRegist" @submit.prevent="registerRent">
-                <h2><label for="newUser"><strong>Rent Robots</strong></label></h2>
-                <p></p>
-                <div>
-                    <label for="numberRobots">Number Of Robots</label>
-                    <input type="number" id="numberRobots" name="numberRobots" value = 1 step="1" v-model="numberRobots">
-                </div>
-                <div>
-                    <label for="begining">Begining</label>
-                    <input type="date" id="begining" name="begining" v-model="beginDate">
-                </div>
-                <button>Submit</button>
-            </form>
+
+        <form class="registerRent_newRegist" @submit.prevent="registerRent">
+            <h2><label for="newUser"><strong>Rent Robots</strong></label></h2>
+            <p></p>
+            <div>
+                <label for="numberRobots">Number Of Robots</label>
+                <input type="number" id="numberRobots" name="numberRobots" min="1" value=1 step="1"
+                    v-model="numberRobots">
+            </div>
+            <div>
+                <label for="begining">Begining</label>
+                <input type="date" id="begining" name="begining" v-model="beginDate">
+            </div>
+            <button>Submit</button>
+
         </form>
+        <router-link :to="{ name: 'Account'}">
+            Cancel
+        </router-link>
     </div>
 </template>
 
@@ -28,35 +32,50 @@
             return {
                 renteeid: this.$route.params.renteeid,
                 numberRobots: 1,
-                beginDate : '',
-                free : 0,
+                beginDate: '',
+                free: 0,
             }
 
         },
 
         methods: {
-            registerRent(){ //TODO SQL PROCEDURE
-                if(this.numberRobots < 1){
-                    alert("You must rent at least 1 robot")
-                }
+            async registerRent() {
+                this.freeRobots();
+                console.log(this.numberRobots);
                 var date = new Date(this.beginDate);
                 var today = new Date()
-                if(date <= today || date == 'Invalid Date'){
+                if (this.numberRobots < 1) {
+                    alert("You must rent at least 1 robot")
+                } else if (date.getDate() < today.getDate() -1 || date == 'Invalid Date') {
                     alert("Invalid Day")
-                }
-                if(this.numberRobots > this.free){
+                } else if (this.numberRobots > this.free) {
                     alert(`We only have ${this.free} robot(s) available`);
-                }
-                const data = {
-                        "rentee": this.renteeid,
-                        "numberRobots": this.numberRobots,
-                        "begining": date.getTime()
-                };
+                } else {
 
-                console.log(data);
+
+                    const data = {
+                        rentee: this.renteeid,
+                        numberrobots: this.numberRobots,
+                        begining: date.toDateString()
+                    };
+
+                    await fetch(process.env.VUE_APP_API + '/rpc/rent',
+                        {
+                            headers: {
+                                "content-type": "application/json"
+                            },
+                            body: JSON.stringify(data),
+                            method: "POST"
+                        }).then(data => { return data.json })
+                        .then(res => { console.log(res) })
+                        .catch(error => console.log(error));
+
+                    this.$router.push({ name: 'Account' });
+
+                }
             },
 
-            async freeRobots(){
+            async freeRobots() {
                 const response = await fetch(process.env.VUE_APP_API + '/robot?available=eq.true');
                 const responseJson = await response.json();
                 responseJson.forEach(() => {
@@ -68,6 +87,15 @@
 
         mounted() {
             this.freeRobots();
+            var todaysDate = new Date();
+
+            var year = todaysDate.getFullYear();
+            var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+            var day = ("0" + todaysDate.getDate()).slice(-2);
+            var minDate = (year + "-" + month + "-" + day);
+
+            document.getElementById("begining").setAttribute('min', minDate);
+            document.getElementById("begining").setAttribute('value' , minDate);
         }
 
 
