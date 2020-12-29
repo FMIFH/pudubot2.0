@@ -1,20 +1,24 @@
 <template>
-    <div class="info">
-        <h3> Total Distance: {{robotTotalDistance}}</h3>
+    <div>
         <div>
-            <button v-on:click='groupByTime("hour")'>DAY</button>
-            <button v-on:click='groupByTime("day")'>WEEK</button>
-            <button v-on:click='groupByTime("week")'>MONTH</button>
-            <button v-on:click='groupByTime("month")'>YEAR</button>
+            <h3> Total Distance: {{robotTotalDistance}}</h3>
         </div>
-        <div class="row mt-5" v-if="robotDistanceArray.length > 0">
-            <div class="col">
-                <h2 class="text-center">Distance</h2>
-                <line-chart :chartData="robotDistanceArray" :options="chartOptions" :chartColors="distanceChartColors"
-                    label="Distance"></line-chart>
+        <div class="info">
+            <div>
+                <button v-on:click='groupByTime("hour")'>DAY</button>
+                <button v-on:click='groupByTime("day")'>WEEK</button>
+                <button v-on:click='groupByTime("week")'>MONTH</button>
+                <button v-on:click='groupByTime("month")'>YEAR</button>
             </div>
-        </div>
+            <div class="row mt-5" v-if="robotDistanceArray.length > 0">
+                <div class="col">
+                    <h2 class="text-center">Distance</h2>
+                    <line-chart :chartData="robotDistanceArray" :options="chartOptions"
+                        :chartColors="distanceChartColors" label="Distance"></line-chart>
+                </div>
+            </div>
 
+        </div>
     </div>
 </template>
 
@@ -55,19 +59,24 @@
             groupByTime: async function (time) {
                 this.robotTotalDistance = 0;
                 this.robotDistanceArray = [];
+                var week = 0
                 var date = new Date();
                 if (time == "day") {
                     date.setDate(date.getDate() - 7);
                 } else if (time == "week") {
+                    time = "day"
+                    week = 1;
                     date.setDate(date.getDate() - 30)
                 } else if (time == "month") {
                     date.setDate(date.getDate() - 365)
                 }
 
+                console.log(moment().format("YYYY-MM-DD HH:mm:ss"))
                 const data = {
                     "timedis": time,
                     "robot": this.robotid,
-                    "begining": date.toDateString()
+                    "begining": date.toDateString(),
+                    "enddate": moment().format("YYYY-MM-DD HH:mm:ss")
                 };
                 const response = await fetch(process.env.VUE_APP_API + '/rpc/distancepertime',
                     {
@@ -85,7 +94,11 @@
                         if (time == "hour") {
                             date1 = moment(d.ts).format("HH");
                         } else if (time == "day") {
-                            date1 = moment(d.ts).format("dddd");
+                            if (week == 1) {
+                                date1 = moment(d.ts).format("DD");
+                            } else {
+                                date1 = moment(d.ts).format("dddd");
+                            }
                         } else if (time == "week") {
                             date1 = moment(d.ts).format("Q");
                         } else if (time == "month") {
@@ -103,21 +116,21 @@
 
         mounted() {
             this.groupByTime("hour");
-            var width = window.screen.width - 100;
-            document.getElementsByClassName("info")[0].style = "width:" + width + "px !important";
+
         }
 
     }
 </script>
 
 <style>
-
     .info h3 {
         text-transform: uppercase;
         font-family: 'Open Sans Condensed', sans-serif;
         color: #929292;
         font-size: 18px;
         font-weight: 100;
+
+
         padding: 20px;
         margin: -30px -30px 30px -30px;
     }
@@ -142,6 +155,4 @@
         background: linear-gradient(to bottom, #254ddfc7 5%, #254ddf 100%);
         background-color: #254ddfc7;
     }
-
-    
 </style>

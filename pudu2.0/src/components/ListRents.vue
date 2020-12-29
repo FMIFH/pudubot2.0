@@ -17,8 +17,8 @@
                 </v-list-item>
 
                 <v-card-actions>
-                    <v-btn v-on:click="goToGroup" outlined rounded text>
-                        Button
+                    <v-btn v-on:click= goToGroup(g.groupid) outlined rounded text>
+                        View More
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -50,11 +50,10 @@
             getRents: async function () {
                 var decoded = await jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
                 const renteeid = decoded.id;
-                const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${renteeid}`);
+                const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${renteeid}&order=groupid.desc`);
                 if (response.ok) {
                     const responseJson = await response.json();
                     responseJson.forEach(e => {
-                        console.log( moment(e.rentStart).format("DD MMM YYYY"))
                         this.groups.push({
                             groupid : e.groupid,
                             renteeid : e.renteeid,
@@ -65,9 +64,8 @@
                 }
             },
 
-            goToGroup(){
-                //TODO
-                alert("go to new group")
+            goToGroup(groupid){
+                this.$router.push({name: "Group", params: {groupid : groupid}})
             }
         },
 
@@ -84,12 +82,9 @@ body{
 }
 
 .listparent{
-    position: absolute;
-    top : 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    position: relative;
+    left: calc(-171px + 50%);    
     text-align: left;
-    
 }
 
 

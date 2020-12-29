@@ -36,4 +36,11 @@ body {
     padding: 0 !important;
     width: 100% !important;
 }
+.container h1{
+    color: #2140AD;
+}
+
+.container {
+    padding: 0 25px;
+}
 </style>

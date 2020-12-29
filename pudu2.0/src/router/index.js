@@ -44,7 +44,12 @@ const routes = [
     path: '/rent/:renteeid',
     name: 'Rent',
     component: () => import('../views/Rent.vue')
-  }
+  },
+  {
+    path: '/group/:groupid',
+    name: 'Group',
+    component: () => import('../views/Group.vue')
+  },
 ]
 
 const router = new VueRouter({

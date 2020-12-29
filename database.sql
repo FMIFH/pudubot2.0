@@ -67,7 +67,8 @@ CREATE TABLE rents (
 CREATE FUNCTION distancepertime (
 	timedis VARCHAR,
 	robot VARCHAR,
-	begining TIMESTAMP
+	begining TIMESTAMP,
+    enddate TIMESTAMP
 ) 
 	RETURNS TABLE (
         ts TIMESTAMP
@@ -75,11 +76,11 @@ CREATE FUNCTION distancepertime (
 	)
 	LANGUAGE plpgsql
 AS $$
-    BEGIN
+   BEGIN
 		RETURN QUERY
             SELECT DATE_TRUNC(timedis,robotposition.ts)  AS  groupedTime, SUM(robotposition.distance)
             FROM robotposition
-            WHERE robotposition.robotid=robot and robotposition.ts > begining
+            WHERE robotposition.robotid=robot and robotposition.ts > begining and robotposition.ts < enddate
             GROUP BY groupedTime;
     END;
 $$
@@ -93,7 +94,7 @@ CREATE PROCEDURE rent(
 LANGUAGE PLPGSQL
 AS $$
     
-   	DECLARE 
+   DECLARE 
         groupidentifier INTEGER;
         robotCursor CURSOR FOR SELECT robotid FROM robot WHERE available = true LIMIT numberRobots;
 		currentRobot VARCHAR;
@@ -102,10 +103,47 @@ AS $$
 		 INSERT INTO rents (renteeid,rentstart) VALUES (rentee,begining) RETURNING rents.groupid
 		)SELECT groupid INTO groupidentifier from grouptable;
         OPEN robotCursor;
-        FETCH FROM robotCursor INTO currentRobot;
+			loop
+			FETCH FROM robotCursor INTO currentRobot;
+			IF NOT FOUND THEN
+				EXIT;
+			END IF;
 			INSERT INTO grouprobots (robotid,groupid) values (currentRobot, groupidentifier);
 			UPDATE robot SET available = false where robotid = currentRobot;
+			end loop;
 		CLOSE robotCursor;
+		
 		RETURN 1;
     END;
+;
+
 $$
+
+CREATE FUNCTION terminaterent(
+    terminategroup INTEGER
+)   
+RETURNS TIMESTAMP
+AS $$
+      
+   	DECLARE 
+        robotgroupcursor CURSOR FOR SELECT robotid FROM groupRobots WHERE groupid = terminateGroup;
+		currentRobot VARCHAR;
+        rentendtimestamp TIMESTAMP;
+    BEGIN
+        WITH currRent as(
+        	UPDATE rents SET rentEnd = CURRENT_TIMESTAMP where groupid = terminateGroup RETURNING rentEnd
+        )SELECT rentend into rentendtimestamp from currRent;
+
+        OPEN robotgroupcursor;
+			loop
+			FETCH FROM robotgroupcursor INTO currentRobot;
+			IF NOT FOUND THEN
+				EXIT;
+			END IF;
+			    UPDATE robot SET available = true where robotid = currentRobot;
+			end loop;
+		CLOSE robotgroupcursor;
+		RETURN rentendtimestamp;
+    END;;
+$$
+LANGUAGE PLPGSQL;

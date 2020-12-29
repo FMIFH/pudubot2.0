@@ -11,7 +11,7 @@
             </div>
             <div>
                 <label for="begining">Begining</label>
-                <input type="date" id="begining" name="begining" v-model="beginDate">
+                <input type="datetime-local" id="begining" name="begining" v-model="beginDate">
             </div>
             <button>Submit</button>
 
@@ -24,6 +24,7 @@
 
 <script>
 
+    import moment from 'moment'
 
     export default {
 
@@ -41,12 +42,11 @@
         methods: {
             async registerRent() {
                 this.freeRobots();
-                console.log(this.numberRobots);
+                console.log(this.beginDate);
                 var date = new Date(this.beginDate);
-                var today = new Date()
                 if (this.numberRobots < 1) {
                     alert("You must rent at least 1 robot")
-                } else if (date.getDate() < today.getDate() -1 || date == 'Invalid Date') {
+                } else if (date == 'Invalid Date') {
                     alert("Invalid Day")
                 } else if (this.numberRobots > this.free) {
                     alert(`We only have ${this.free} robot(s) available`);
@@ -56,7 +56,7 @@
                     const data = {
                         rentee: this.renteeid,
                         numberrobots: this.numberRobots,
-                        begining: date.toDateString()
+                        begining: date
                     };
 
                     await fetch(process.env.VUE_APP_API + '/rpc/rent',
@@ -66,9 +66,8 @@
                             },
                             body: JSON.stringify(data),
                             method: "POST"
-                        }).then(data => { return data.json })
-                        .then(res => { console.log(res) })
-                        .catch(error => console.log(error));
+                        });
+
 
                     this.$router.push({ name: 'Account' });
 
@@ -87,15 +86,16 @@
 
         mounted() {
             this.freeRobots();
-            var todaysDate = new Date();
+            var todaysDate = moment().format('YYYY-MM-DDTHH:mm');
+            //console.log(todaysDate)
+           // var year = todaysDate.getFullYear();
+           // var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+           // var day = ("0" + todaysDate.getDate()).slice(-2);
+           // var minDate = (year + "-" + month + "-" + day);
 
-            var year = todaysDate.getFullYear();
-            var month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
-            var day = ("0" + todaysDate.getDate()).slice(-2);
-            var minDate = (year + "-" + month + "-" + day);
-
-            document.getElementById("begining").setAttribute('min', minDate);
-            document.getElementById("begining").setAttribute('value' , minDate);
+            document.getElementById("begining").setAttribute('min', todaysDate);
+            document.getElementById("begining").setAttribute('value', todaysDate);
+            this.beginDate = todaysDate;
         }
 
 

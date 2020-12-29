@@ -7,8 +7,11 @@
         <div class = "rent">
             <button v-on:click="rentRobots"> Rent Robots</button>
         </div>
-        <div class="bottom">
-            <button v-on:click="logOut">Log Out</button>
+        
+        <div class="btn_fixed">
+            <div class="bottom">
+                <button v-on:click="logOut">Log Out</button>
+            </div>
         </div>
 
         <ListRents></ListRents>
@@ -90,17 +93,31 @@
         color: #2140AD;
     }
 
+    .btn_fixed{
+        position: fixed;
+        bottom: 5px;
+        right: 5px;
+        pointer-events: all !important;
+        z-index: 99999;
+    }
+
     .bottom {
         padding: 0px 30px 30px 30px;
-        position: relative;
+        text-align: right;
+    }
+
+    .rent {
+        padding: 0px 30px 30px 30px;
         text-align: right;
         float: right;
         margin-left: 90%;
         position: absolute;
-        bottom: 0px;
+        z-index: 99999;
+
     }
 
     .bottom button {
+        
         -moz-box-shadow: inset 0px 1px 0px 0px #2140AD;
         -webkit-box-shadow: inset 0px 1px 0px 0px #2140AD;
         box-shadow: inset 0px 1px 0px 0px #2140AD;
