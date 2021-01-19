@@ -57,7 +57,6 @@
 
         methods: {
             groupByTime: async function (time) {
-                this.robotTotalDistance = 0;
                 this.robotDistanceArray = [];
                 var week = 0
                 var date = new Date();
@@ -107,15 +106,27 @@
                         }
                         console.log(d.ts);
                         this.robotDistanceArray.push({ date: date1, total: d.distance });
+                    });
+                    
+                }
+            },
+
+            async totalDistance(){
+                const response = await fetch(process.env.VUE_APP_API + `/robotposition?robotid=eq.${this.robotid}`);
+                if(response.ok){
+                    const responseJson = await response.json();
+                    responseJson.forEach(d => {
                         this.robotTotalDistance += d.distance;
                     });
-                    this.robotTotalDistance = Math.round(this.robotTotalDistance);
                 }
+                this.robotTotalDistance = Math.round(this.robotTotalDistance);
+
             }
         },
 
         mounted() {
             this.groupByTime("hour");
+            this.totalDistance();
 
         }
 

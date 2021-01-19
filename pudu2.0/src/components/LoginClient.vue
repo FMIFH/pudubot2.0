@@ -52,7 +52,7 @@
                 let success = await this.comparePasswords(password);
                 console.log(success)
                 if(success === false){
-                    throw ''
+                    throw 'Erro Login'
                 }
                 
                 const user = {id : renteeid,level : level};

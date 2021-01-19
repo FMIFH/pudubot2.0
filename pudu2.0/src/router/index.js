@@ -21,6 +21,11 @@ const routes = [
     component: () => import('../views/Robots.vue')
   },
   {
+    path: '/users',
+    name: 'Users',
+    component: () => import('../views/Users.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue')
@@ -49,6 +54,16 @@ const routes = [
     path: '/group/:groupid',
     name: 'Group',
     component: () => import('../views/Group.vue')
+  },
+  {
+    path: '/user/:userid',
+    name: 'User',
+    component: () => import('../views/User.vue')
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/Admin.vue')
   },
 ]
 

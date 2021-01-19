@@ -12,6 +12,9 @@
         <div id="terminate" class="bottom1">
             <button v-if="notTerminated()" v-on:click="terminateRent">Terminate Rent</button>
         </div>
+        <div class="goBack">
+            <button v-on:click="goBack">Go Back</button>
+        </div>
     </div>
 </template>
 
@@ -43,16 +46,28 @@
                     this.$router.push({ name: "Account" });
                 }
                 const decoded = jwt.verify(this.token, process.env.VUE_APP_ACCESS_TOKEN_SECRET);
-                const userid = decoded.id;
-                const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${userid}&groupid=eq.${this.groupid}`);
-                if (response.ok) {
-                    const responseJson = await response.json();
-                    if (responseJson.length == 0) {
-                        this.$router.push({ name: "Account" });
-                    } else {
-                        responseJson.forEach(element => {
+                if (decoded.level) {
+                    const responseadmin = await fetch(process.env.VUE_APP_API + `/rents?groupid=eq.${this.groupid}`);
+                    if (responseadmin.ok) {
+                        const responseJsonadmin = await responseadmin.json();
+
+                        responseJsonadmin.forEach(element => {
                             this.rent = element
                         });
+                    }
+                } else {
+
+                    const userid = decoded.id;
+                    const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${userid}&groupid=eq.${this.groupid}`);
+                    if (response.ok) {
+                        const responseJson = await response.json();
+                        if (responseJson.length == 0) {
+                            this.$router.push({ name: "Account" });
+                        } else {
+                            responseJson.forEach(element => {
+                                this.rent = element
+                            });
+                        }
                     }
                 }
             },
@@ -162,6 +177,10 @@
 
             notTerminated() {
                 return this.rent.rentend == null;
+            },
+
+            goBack() {
+                this.$router.push({ name: 'Account' });
             }
         },
 
@@ -214,5 +233,15 @@
     .bottom1 button:hover {
         background: linear-gradient(to bottom, #700000 5%, #700000 100%);
         background-color: #700000;
+    }
+
+    .goBack {
+        padding: 0px 30px 30px 30px;
+        position: relative;
+        text-align: right;
+        float: right;
+        margin-left: 90%;
+        position: absolute;
+        bottom: 0px;
     }
 </style>
