@@ -116,7 +116,6 @@ AS $$
 		RETURN 1;
     END;
 ;
-
 $$
 
 CREATE FUNCTION terminaterent(
@@ -147,3 +146,62 @@ AS $$
     END;;
 $$
 LANGUAGE PLPGSQL;
+
+CREATE FUNCTION groupdistancepertime (
+    timedis VARCHAR,
+	groupi INTEGER
+) 
+	RETURNS TABLE (
+        ts TIMESTAMP,
+    	distance DOUBLE PRECISION
+	)
+	LANGUAGE plpgsql
+AS $$
+   BEGIN
+		RETURN QUERY
+            SELECT DATE_TRUNC(timedis,robotposition.ts)  AS  groupedTime, SUM(robotposition.distance)
+            FROM robotposition
+            WHERE robotid in 
+                    (SELECT robotid 
+                    FROM grouprobots WHERE groupid = groupi) 
+                AND robotposition.ts BETWEEN 
+                    (SELECT rentstart 
+                    FROM rents 
+                    WHERE groupid = groupi) 
+                    AND 
+                    (SELECT rentend 
+                    FROM rents 
+                    WHERE groupid = groupi)
+            GROUP BY groupedTime;
+    END;
+$$
+
+
+CREATE FUNCTION groupdeliveriespertime (
+    timedis VARCHAR,
+	groupi INTEGER
+) 
+	RETURNS TABLE (
+        ts TIMESTAMP,
+    	delivery INTEGER
+	)
+	LANGUAGE plpgsql
+AS $$
+   BEGIN
+		RETURN QUERY
+            SELECT DATE_TRUNC(timedis,robotposition.ts)  AS  groupedTime, SUM(*)
+            FROM delivery
+            WHERE robotid in 
+                    (SELECT robotid 
+                    FROM grouprobots WHERE groupid = groupi) 
+                AND robotposition.ts BETWEEN 
+                    (SELECT rentstart 
+                    FROM rents 
+                    WHERE groupid = groupi) 
+                    AND 
+                    (SELECT rentend 
+                    FROM rents 
+                    WHERE groupid = groupi)
+            GROUP BY groupedTime;
+    END;
+$$

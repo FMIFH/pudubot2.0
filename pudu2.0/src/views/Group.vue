@@ -12,6 +12,7 @@
         <div id="terminate" class="bottom1">
             <button v-if="notTerminated()" v-on:click="terminateRent">Terminate Rent</button>
         </div>
+        <Graphs :groupid= "parseInt(groupid)"></Graphs>
         <div class="goBack">
             <button v-on:click="goBack">Go Back</button>
         </div>
@@ -20,13 +21,16 @@
 
 <script>
     import Sidebar from '../components/sidebar.vue'
+    import Graphs from '../components/groupinfo.vue'
+
     import jwt from 'jsonwebtoken'
     import moment from 'moment'
 
     export default {
 
         components: {
-            Sidebar
+            Sidebar,
+            Graphs
         },
 
         data() {
@@ -237,11 +241,10 @@
 
     .goBack {
         padding: 0px 30px 30px 30px;
-        position: relative;
         text-align: right;
         float: right;
         margin-left: 90%;
-        position: absolute;
+        position: relative;
         bottom: 0px;
     }
 </style>

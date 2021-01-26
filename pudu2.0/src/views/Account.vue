@@ -109,11 +109,10 @@
 
     .bottom {
         padding: 0px 30px 30px 30px;
-        position: relative;
+        position: absolute;
         text-align: right;
         float: right;
         margin-left: 90%;
-        position: absolute;
         bottom: 0px;
     }
 

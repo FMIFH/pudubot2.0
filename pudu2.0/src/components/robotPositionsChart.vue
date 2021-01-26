@@ -51,15 +51,15 @@
                 if(response.ok){
                     const responseJson = await response.json();
                     responseJson.forEach(d => {
-                        this.robotPositionsArray.push({total: {x :  Math.floor(d.x), y: Math.floor(d.y) , r:3}});
-                        if(Math.floor(d.x) < minX){
+                        this.robotPositionsArray.push({total: {x :  d.x, y: d.y , r:3}});
+                        if(d.x < minX){
                             minX = Math.floor(d.x);
                         }
-                        if(Math.floor(d.x) > maxX){
+                        if(d.x > maxX){
                             maxX = Math.floor(d.x);
                         }
                     });
-                    for(var i = minX; i <= maxX; i++){
+                    for(var i = minX; i <= maxX; i= i+0.01){
                         this.labels.push(i);
                     }
                 }
