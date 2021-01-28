@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <div class="info">
             <div>
                 <button v-on:click='functionsByTime("hour")'>DAY</button>
@@ -21,16 +20,19 @@
                 </div>
             </div>
         </div>
+        <heatmap :groupid= "parseInt(groupid)"></heatmap>
     </div>
 </template>
 
 <script>
     import LineChart from '../components/LineChart.vue';
+    import heatmap from '../components/heatmap.vue'
     import moment from "moment";
 
     export default {
         components: {
-            LineChart
+            LineChart,
+            heatmap
         },
 
         props: {
@@ -96,9 +98,7 @@
                             date1 = moment(d.ts).format("Q");
                         } else if (time == "month") {
                             date1 = moment(d.ts).format("MMMM");
-                            console.log(date1)
                         }
-                        console.log(d.ts);
                         this.robotDistanceArray.push({ date: date1, total: d.distance });
                     });
                     
@@ -129,7 +129,6 @@
                 if (response.ok) {
                     const responseJson = await response.json();
                     responseJson.forEach(d => {
-                        console.log(d);
                         var date1;
                         if (time == "hour") {
                             date1 = moment(d.ts).format("HH");
@@ -143,7 +142,6 @@
                             date1 = moment(d.ts).format("Q");
                         } else if (time == "month") {
                             date1 = moment(d.ts).format("MMMM");
-                            console.log(date1)
                         }
                         this.robotDeliveriesArray.push({ date: date1, total: d.deliveries });
                     });

@@ -205,3 +205,35 @@ AS $$
             GROUP BY groupedTime;
     END;
 $$
+
+
+CREATE FUNCTION grouprobotpositions (
+    groupi INTEGER
+) 
+	RETURNS TABLE (
+        x DOUBLE PRECISION,
+        y DOUBLE PRECISION,
+        total BIGINT
+	)
+	LANGUAGE plpgsql
+AS $$
+   BEGIN
+		RETURN QUERY
+
+            SELECT ROUND(robotposition.x), ROUND(robotposition.y), count(*)
+            FROM robotposition
+            WHERE robotid in 
+                    (SELECT robotid 
+                    FROM grouprobots WHERE groupid = groupi) 
+                AND robotposition.ts BETWEEN 
+                    (SELECT rentstart 
+                    FROM rents 
+                    WHERE groupid = groupi) 
+                    AND 
+                    (SELECT rentend 
+                    FROM rents 
+                    WHERE groupid = groupi)
+            GROUP BY ROUND(robotposition.x),ROUND(robotposition.y)
+            ORDER BY ROUND(robotposition.x),ROUND(robotposition.y); 
+    END;
+$$

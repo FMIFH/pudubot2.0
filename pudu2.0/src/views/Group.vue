@@ -93,13 +93,11 @@
             },
 
             async getTotalDistance() {
-                console.log(this.rent.rentstart)
                 var date = moment(this.rent.rentstart).format('YYYYMMDD HH:mm:ss');
-                console.log(date)
+                
 
                 if (this.rent.rentend == null) {
                     for await (var e of this.robots) {
-                        console.log(e)
                         const response = await fetch(process.env.VUE_APP_API + `/robotposition?robotid=eq.${e.robot}&ts=gte.${date})`);
                         if (response.ok) {
                             const responseJson = await response.json();
@@ -112,7 +110,6 @@
                     }
                 } else {
                     var dateend = moment(this.rent.rentend).format('YYYY-MM-DD HH:mm:ss')
-                    console.log(dateend)
                     for (var e2 of this.robots) {
                         const response = await fetch(process.env.VUE_APP_API + `/robotposition?robotid=eq.${e2.robot}&and=(ts.gte.${date},ts.lte.${dateend})`);
                         if (response.ok) {
@@ -132,7 +129,6 @@
                 var date = moment(this.rent.rentstart).format('YYYYMMDD HH:mm:ss');
                 if (this.rent.rentend == null) {
                     for await (var e of this.robots) {
-                        console.log(e)
                         const response = await fetch(process.env.VUE_APP_API + `/delivery?robotid=eq.${e.robot}&deliverysent=gte.${date})`);
                         if (response.ok) {
                             const responseJson = await response.json();
