@@ -10,8 +10,10 @@
         <p></p>
         <input type="checkbox" id="checkbox" v-model="checked">
         <label for="checkbox">Set Origin</label>
-        <input type="checkbox" id="checkbox2" v-model="checkedScale">
-        <label for="checkbox2">Change Scale</label>
+        <p></p>
+        <input type="number" id="height" v-model="height" @change="changeScale">
+        <label for="height">Building Length</label>
+
         <p></p>
         <div class="transformations">
             <button v-on:click="rotate">Rotate 90º</button>
@@ -40,12 +42,12 @@
                 drawArray: [],
                 heatmap: null,
                 checked: false,
-                checkedScale: false,
                 origin: { x: 0, y: 0 },
                 scale: 1,
                 angle: 0,
                 reflectionX: 1,
-                reflectionY: 1
+                reflectionY: 1,
+                height: 0
             }
         },
 
@@ -96,8 +98,7 @@
             async setplant(event) {
                 var background = document.getElementById("plant");
                 var file = event.target.files[0];
-                console.log(process.env.VUE_APP_BLUEPRINTAPI)
-                await fetch(process.env.VUE_APP_BLUEPRINTAPI + `/blueprint/${this.groupid}`,
+                /*await fetch(process.env.VUE_APP_BLUEPRINTAPI + `/blueprint/${this.groupid}`,
                     {
                         headers: {
                             "content-type": "image/png"
@@ -105,8 +106,10 @@
                         body: file,
                         method: "POST"
                     }
-                );
-                background.src = URL.createObjectURL(process.env.VUE_APP_BLUEPRINTAPI + `/blueprint/${this.groupid}`);
+                );*/
+
+                background.src = URL.createObjectURL(file)//process.env.VUE_APP_BLUEPRINTAPI + `/blueprint/${this.groupid}`);
+                this.changeScale()
             },
 
             changePosition(e) {
@@ -121,17 +124,14 @@
                 }
             },
 
-            changeScale(e) {
-                if (this.checkedScale) {
-                    var div = document.getElementById("heatmapContainerWrapper")
-                    var disx = e.pageX - div.offsetLeft;
-                    var disy = e.pageY - div.offsetTop;
-                    var xdif = disx - this.origin.x;
-                    var ydif = disy - this.origin.y
-                    this.scale = Math.sqrt(xdif * xdif + ydif * ydif).toFixed(0);
-                    this.drawHeatMap();
-                    this.checkedScale = false;
-                }
+            changeScale() {
+                var img = document.getElementById("plant");
+                var imgH = img.naturalHeight;
+                this.scale = (imgH/this.height).toFixed(1);
+                console.log(this.scale)
+                this.drawHeatMap();
+                this.checkedScale = false;
+
             },
 
             rotate() {
@@ -186,10 +186,6 @@
                 }
                 this.changeScale(e);
                 this.changePosition(e);
-            },
-
-            movecorner() {
-                console.log("oi");
             },
 
         },
