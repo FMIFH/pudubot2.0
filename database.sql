@@ -169,7 +169,7 @@ AS $$
                     FROM rents 
                     WHERE groupid = groupi) 
                     AND 
-                    (SELECT rentend 
+                    (SELECT COALESCE(rentend, CURRENT_TIMESTAMP) 
                     FROM rents 
                     WHERE groupid = groupi)
             GROUP BY groupedTime;
@@ -183,36 +183,35 @@ CREATE FUNCTION groupdeliveriespertime (
 ) 
 	RETURNS TABLE (
         ts TIMESTAMP,
-    	delivery INTEGER
+    	delivery BIGINT
 	)
 	LANGUAGE plpgsql
 AS $$
    BEGIN
 		RETURN QUERY
-            SELECT DATE_TRUNC(timedis,robotposition.ts)  AS  groupedTime, SUM(*)
+            SELECT DATE_TRUNC(timedis,delivery.deliveryrequest)  AS  groupedTime, COUNT(*)
             FROM delivery
             WHERE robotid in 
                     (SELECT robotid 
                     FROM grouprobots WHERE groupid = groupi) 
-                AND robotposition.ts BETWEEN 
+                AND delivery.deliveryrequest BETWEEN 
                     (SELECT rentstart 
                     FROM rents 
                     WHERE groupid = groupi) 
                     AND 
-                    (SELECT rentend 
+                    (SELECT COALESCE(rentend, CURRENT_TIMESTAMP) 
                     FROM rents 
                     WHERE groupid = groupi)
             GROUP BY groupedTime;
     END;
 $$
 
-
 CREATE FUNCTION grouprobotpositions (
     groupi INTEGER
 ) 
 	RETURNS TABLE (
-        x DOUBLE PRECISION,
-        y DOUBLE PRECISION,
+        x NUMERIC,
+        y NUMERIC,
         total BIGINT
 	)
 	LANGUAGE plpgsql
@@ -220,7 +219,7 @@ AS $$
    BEGIN
 		RETURN QUERY
 
-            SELECT ROUND(robotposition.x), ROUND(robotposition.y), count(*)
+            SELECT ROUND(robotposition.x::NUMERIC,1) as thisx, ROUND(robotposition.y::NUMERIC,1) as thisy, count(*) as counter
             FROM robotposition
             WHERE robotid in 
                     (SELECT robotid 
@@ -230,10 +229,10 @@ AS $$
                     FROM rents 
                     WHERE groupid = groupi) 
                     AND 
-                    (SELECT rentend 
+                    (SELECT COALESCE(rentend, CURRENT_TIMESTAMP) 
                     FROM rents 
                     WHERE groupid = groupi)
-            GROUP BY ROUND(robotposition.x),ROUND(robotposition.y)
-            ORDER BY ROUND(robotposition.x),ROUND(robotposition.y); 
+            GROUP BY thisx,thisy
+            ORDER BY counter DESC; 
     END;
 $$

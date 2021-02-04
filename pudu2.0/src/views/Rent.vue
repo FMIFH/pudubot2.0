@@ -41,7 +41,7 @@
 
         methods: {
             async registerRent() {
-                this.freeRobots();
+                await this.freeRobots();
                 console.log(this.beginDate);
                 var date = new Date(this.beginDate);
                 if (this.numberRobots < 1) {
@@ -75,6 +75,7 @@
             },
 
             async freeRobots() {
+                this.free = 0;
                 const response = await fetch(process.env.VUE_APP_API + '/robot?available=eq.true');
                 const responseJson = await response.json();
                 responseJson.forEach(() => {

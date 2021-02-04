@@ -143,7 +143,8 @@
                         } else if (time == "month") {
                             date1 = moment(d.ts).format("MMMM");
                         }
-                        this.robotDeliveriesArray.push({ date: date1, total: d.deliveries });
+                        console.log(d);
+                        this.robotDeliveriesArray.push({ date: date1, total: d.delivery });
                     });
                     
                 }
