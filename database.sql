@@ -62,6 +62,17 @@ CREATE TABLE rents (
     PRIMARY KEY (groupid)
 );
 
+CREATE TABLE heatmap(
+    groupid INTEGER NOT NULL,,
+    originX NUMERIC,
+    originY NUMERIC,
+    scale NUMERIC,
+    angle NUMERIC,
+    reflectionX NUMERIC,
+    reflectionY NUMERIC,
+    height NUMERIC,
+    FOREIGN KEY (groupid) REFERENCES rents(groupid)
+);
 --------------------------------------------------
 
 CREATE FUNCTION distancepertime (
