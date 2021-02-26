@@ -13,7 +13,7 @@
             <div class="row mt-5" v-if="robotDistanceArray.length > 0">
                 <div class="col">
                     <h2 class="text-center">Distance</h2>
-                    <line-chart :chartData="robotDistanceArray" :options="chartOptions"
+                    <line-chart :chartData="robotDistanceArray" :chartDataLabels='chartLabels' :options="chartOptions"
                         :chartColors="distanceChartColors" label="Distance"></line-chart>
                 </div>
             </div>
@@ -25,6 +25,9 @@
 <script>
     import LineChart from '../components/LineChart.vue';
     import moment from "moment";
+
+
+
 
     export default {
         components: {
@@ -40,6 +43,7 @@
                 robotTotalDistance: 0,
                 robotDistanceArray: [],
                 displayRobotDistanceArray: [],
+                chartLabels: [],
                 distanceChartColors: {
                     borderColor: "#9BA0B3",
                     pointBorderColor: "#0E1428",
@@ -51,6 +55,13 @@
                 chartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0
+                            }
+                        }]
+                    }
                 }
             }
         },
@@ -60,17 +71,25 @@
                 this.robotDistanceArray = [];
                 var week = 0
                 var date = new Date();
+                var diff = 0;
                 if (time == "day") {
-                    date.setDate(date.getDate() - 7);
+
+                    var day = date.getDay();
+                    console.log(day)
+                    diff = date.getDate() - day;
+                    date = new Date(date.setDate(diff));
+
                 } else if (time == "week") {
                     time = "day"
                     week = 1;
-                    date.setDate(date.getDate() - 30)
+                    diff = 1
+                    date = new Date(date.setDate(diff));
+                    console.log(date)
                 } else if (time == "month") {
-                    date.setDate(date.getDate() - 365)
+                    console.log(date.getFullYear())
+                    date = new Date(new Date().getFullYear(), 0, 1);
+                    console.log(date)
                 }
-
-                console.log(moment().format("YYYY-MM-DD HH:mm:ss"))
                 const data = {
                     "timedis": time,
                     "robot": this.robotid,
@@ -88,32 +107,64 @@
                 );
                 if (response.ok) {
                     const responseJson = await response.json();
-                    responseJson.forEach(d => {
-                        var date1;
-                        if (time == "hour") {
-                            date1 = moment(d.ts).format("HH");
-                        } else if (time == "day") {
-                            if (week == 1) {
-                                date1 = moment(d.ts).format("DD");
-                            } else {
-                                date1 = moment(d.ts).format("dddd");
-                            }
-                        } else if (time == "week") {
-                            date1 = moment(d.ts).format("Q");
-                        } else if (time == "month") {
-                            date1 = moment(d.ts).format("MMMM");
-                            console.log(date1)
-                        }
-                        console.log(d.ts);
-                        this.robotDistanceArray.push({ date: date1, total: d.distance });
-                    });
-                    
+                    this.generateGraph(responseJson, time, week);
                 }
             },
 
-            async totalDistance(){
+            generateGraph(responseJson, time, week) {
+                if (time == "hour") {
+                    this.chartLabels = Array.from(Array(24).keys())
+                } else if (time == "day") {
+                    if (week == 1) {
+                        this.chartLabels = Array.from(Array(31).keys())
+                    } else {
+                        this.chartLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+                    }
+                } else if (time == "week") {
+                    this.chartLabels = Array.from(Array(4).keys())
+
+                } else if (time == "month") {
+                    this.chartLabels = [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December'
+                    ];
+                }
+                this.robotDistanceArray = new Array(this.chartLabels.length).fill(0);
+                responseJson.forEach(d => {
+                    var date1;
+                    if (time == "hour") {
+                        date1 = moment(d.ts).format("HH");
+                    } else if (time == "day") {
+                        if (week == 1) {
+                            date1 = moment(d.ts).format("DD");
+                        } else {
+                            date1 = moment(d.ts).format("dddd");
+                        }
+                    } else if (time == "week") {
+                        date1 = moment(d.ts).format("Q");
+                    } else if (time == "month") {
+                        date1 = moment(d.ts).format("M") - 1;
+                    }
+                    // console.log(d.ts);
+                    this.robotDistanceArray[date1] = d.distance;
+                    //console.log(this.robotDistanceArray)
+                });
+            },
+
+            async totalDistance() {
                 const response = await fetch(process.env.VUE_APP_API + `/robotposition?robotid=eq.${this.robotid}`);
-                if(response.ok){
+                if (response.ok) {
                     const responseJson = await response.json();
                     responseJson.forEach(d => {
                         this.robotTotalDistance += d.distance;
@@ -164,6 +215,6 @@
 
     .info button:hover {
         background: linear-gradient(to bottom, #254ddfc7 5%, #254ddf 100%);
-        background-color: #254ddfc7;
+        background-color: #264edfc7;
     }
 </style>

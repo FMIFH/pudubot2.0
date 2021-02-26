@@ -12,7 +12,7 @@
                 <button v-on:click="adminPage"> Admin Page</button>
             </div>
         </div>
-        <div class="bottom">
+        <div class="bottomB">
             <button v-on:click="logOut">Log Out</button>
         </div>
 
@@ -107,16 +107,17 @@
         color: #2140AD;
     }
 
-    .bottom {
+    .bottomB {
         padding: 0px 30px 30px 30px;
         position: absolute;
         text-align: right;
         float: right;
         margin-left: 90%;
         bottom: 0px;
+        z-index: 9999;
     }
 
-    .bottom button {
+    .bottomB button {
         -moz-box-shadow: inset 0px 1px 0px 0px #2140AD;
         -webkit-box-shadow: inset 0px 1px 0px 0px #2140AD;
         box-shadow: inset 0px 1px 0px 0px #2140AD;
@@ -132,7 +133,7 @@
         text-transform: uppercase;
     }
 
-    .bottom button:hover {
+    .bottomB button:hover {
         background: linear-gradient(to bottom, #254ddfc7 5%, #254ddf 100%);
         background-color: #254ddfc7;
     }

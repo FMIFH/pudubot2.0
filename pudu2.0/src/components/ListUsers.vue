@@ -83,6 +83,7 @@ body{
 }
 
 .listparent{
+    padding: 2%;
     position: relative;
     left: calc(-171px + 50%);    
     text-align: left;

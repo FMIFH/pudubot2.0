@@ -57,8 +57,8 @@
                         this.groups.push({
                             groupid : e.groupid,
                             renteeid : e.renteeid,
-                            rentStart : moment(e.rentStart).format("DD MMM YYYY"),
-                            rentEnd : moment(e.rentEnd).format("DD MMM YYYY")
+                            rentStart : moment(e.rentstart).format("DD MMM YYYY"),
+                            rentEnd : moment(e.rentend).format("DD MMM YYYY")
                         })
                     });
                 }

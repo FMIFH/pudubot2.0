@@ -3,7 +3,6 @@
     <div id="mySidebar" class="sidebar">
       <a href="javascript:void(0)" class="closebtn" v-on:click="closeNav()">&times;</a>
       <router-link :to="{name:'Home'}">Home</router-link>
-      <router-link :to="{name:'Robots'}">Robots</router-link>
       <router-link :to="{name:'Account'}">Account</router-link>
     </div>
     
