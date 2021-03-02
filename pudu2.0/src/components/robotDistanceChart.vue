@@ -156,9 +156,7 @@
                     } else if (time == "month") {
                         date1 = moment(d.ts).format("M") - 1;
                     }
-                    // console.log(d.ts);
                     this.robotDistanceArray[date1] = d.distance;
-                    //console.log(this.robotDistanceArray)
                 });
             },
 

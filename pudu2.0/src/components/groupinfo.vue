@@ -11,16 +11,17 @@
                 <div class="col" v-if="robotDistanceArray.length > 0">
                     <h2 class="text-center">Distance</h2>
                     <line-chart :chartData="robotDistanceArray" :options="chartOptions"
-                        :chartColors="distanceChartColors" label="Distance"></line-chart>
+                        :chartColors="distanceChartColors" :chartDataLabels='chartLabels' label="Distance"></line-chart>
                 </div>
                 <div class="col" v-if="robotDeliveriesArray.length > 0">
                     <h2 class="text-center">Deliveries</h2>
                     <line-chart :chartData="robotDeliveriesArray" :options="chartOptions"
-                        :chartColors="distanceChartColors" label="Deliveries"></line-chart>
+                        :chartColors="distanceChartColors" :chartDataLabels='chartLabels' label="Deliveries">
+                    </line-chart>
                 </div>
             </div>
         </div>
-        <heatmap :groupid= "parseInt(groupid)"></heatmap>
+        <heatmap :groupid="parseInt(groupid)"></heatmap>
     </div>
 </template>
 
@@ -45,6 +46,7 @@
                 robotDistanceArray: [],
                 robotDeliveriesArray: [],
                 displayRobotDistanceArray: [],
+                chartLabels: [],
                 distanceChartColors: {
                     borderColor: "#9BA0B3",
                     pointBorderColor: "#0E1428",
@@ -56,6 +58,13 @@
                 chartOptions: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: 0
+                            }
+                        }]
+                    }
                 }
             }
         },
@@ -71,7 +80,7 @@
 
                 const data = {
                     "timedis": time,
-                    "groupi" : this.groupid
+                    "groupi": this.groupid
                 };
                 const response = await fetch(process.env.VUE_APP_API + '/rpc/groupdistancepertime',
                     {
@@ -84,38 +93,66 @@
                 );
                 if (response.ok) {
                     const responseJson = await response.json();
+                    if (time == "hour") {
+                        this.chartLabels = Array.from(Array(24).keys())
+                    } else if (time == "day") {
+                        if (week == 1) {
+                            this.chartLabels = Array.from(Array(31).keys())
+                        } else {
+                            this.chartLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+                        }
+                    } else if (time == "week") {
+                        this.chartLabels = Array.from(Array(4).keys())
+
+                    } else if (time == "month") {
+                        this.chartLabels = [
+                            'January',
+                            'February',
+                            'March',
+                            'April',
+                            'May',
+                            'June',
+                            'July',
+                            'August',
+                            'September',
+                            'October',
+                            'November',
+                            'December'
+                        ];
+                    }
+                    this.robotDistanceArray = new Array(this.chartLabels.length).fill(0);
                     responseJson.forEach(d => {
                         var date1;
                         if (time == "hour") {
                             date1 = moment(d.ts).format("HH");
                         } else if (time == "day") {
                             if (week == 1) {
-                                date1 = moment(d.ts).format("DD/MM");
+                                date1 = moment(d.ts).format("DD");
                             } else {
                                 date1 = moment(d.ts).format("dddd");
                             }
                         } else if (time == "week") {
                             date1 = moment(d.ts).format("Q");
                         } else if (time == "month") {
-                            date1 = moment(d.ts).format("MMMM");
+                            date1 = moment(d.ts).format("M") - 1;
                         }
-                        this.robotDistanceArray.push({ date: date1, total: d.distance });
+                        this.robotDistanceArray[date1] = d.distance;
                     });
-                    
                 }
             },
 
-            async deliveriesbytime(time){
+            async deliveriesbytime(time) {
                 this.robotDeliveriesArray = [];
                 var week = 0
                 if (time == "week") {
                     time = "day"
                     week = 1;
                 }
-                
+
                 const data = {
                     "timedis": time,
-                    "groupi" : this.groupid
+                    "groupi": this.groupid
                 };
                 const response = await fetch(process.env.VUE_APP_API + '/rpc/groupdeliveriespertime',
                     {
@@ -128,25 +165,54 @@
                 );
                 if (response.ok) {
                     const responseJson = await response.json();
+                    if (time == "hour") {
+                        this.chartLabels = Array.from(Array(24).keys())
+                    } else if (time == "day") {
+                        if (week == 1) {
+                            this.chartLabels = Array.from(Array(31).keys())
+                        } else {
+                            this.chartLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+                        }
+                    } else if (time == "week") {
+                        this.chartLabels = Array.from(Array(4).keys())
+
+                    } else if (time == "month") {
+                        this.chartLabels = [
+                            'January',
+                            'February',
+                            'March',
+                            'April',
+                            'May',
+                            'June',
+                            'July',
+                            'August',
+                            'September',
+                            'October',
+                            'November',
+                            'December'
+                        ];
+                    }
+                    this.robotDeliveriesArray = new Array(this.chartLabels.length).fill(0);
                     responseJson.forEach(d => {
                         var date1;
                         if (time == "hour") {
                             date1 = moment(d.ts).format("HH");
                         } else if (time == "day") {
                             if (week == 1) {
-                                date1 = moment(d.ts).format("DD/MM");
+                                date1 = moment(d.ts).format("DD");
                             } else {
                                 date1 = moment(d.ts).format("dddd");
                             }
                         } else if (time == "week") {
                             date1 = moment(d.ts).format("Q");
                         } else if (time == "month") {
-                            date1 = moment(d.ts).format("MMMM");
+                            date1 = moment(d.ts).format("M") - 1;
                         }
-                        console.log(d);
-                        this.robotDeliveriesArray.push({ date: date1, total: d.delivery });
+                        this.robotDeliveriesArray[date1] = d.delivery;
                     });
-                    
+
+
                 }
             },
 
@@ -157,7 +223,7 @@
         },
 
         mounted() {
-            this.functionsByTime("week");
+            this.functionsByTime("month");
         }
 
     }

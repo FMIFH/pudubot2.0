@@ -23,7 +23,7 @@
                 </v-list-item>
 
                 <v-card-actions>
-                    <v-btn v-on:click=goToUser(u.renteeid) outlined rounded text>
+                    <v-btn v-on:click='goToUser(u)' outlined rounded text>
                         View More
                     </v-btn>
                 </v-card-actions>

@@ -2,7 +2,10 @@
     <div>
         <Sidebar></Sidebar>
         <div class="head">
-            <h1>User {{userId}}</h1>
+            <h1>User {{userId.renteeid}}</h1>
+            <h2>{{userId.renteename}}</h2>
+            <h3>{{userId.phone}}</h3>
+            <h3>{{userId.email}}</h3>
         </div>
         <div class="listparent">
             <div class="list" v-for="g in groups" :key="g.groupid">
@@ -20,9 +23,8 @@
 
                             <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
                         </v-list-item>
-
                         <v-card-actions>
-                            <v-btn v-on:click=goToGroup(g.groupid) outlined rounded text>
+                            <v-btn v-on:click="goToGroup(g.groupid)" outlined rounded text>
                                 View More
                             </v-btn>
                         </v-card-actions>
@@ -56,7 +58,7 @@
 
             async getName() {
 
-                const response = await fetch(process.env.VUE_APP_API + `/rentee?renteeid=eq.${this.userId}`);
+                const response = await fetch(process.env.VUE_APP_API + `/rentee?renteeid=eq.${this.userId.renteeid}`);
                 if (response.ok) {
                     const responseJson = await response.json();
                     responseJson.forEach(d => {
@@ -67,7 +69,7 @@
             },
 
             getRents: async function () {
-                const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${this.userId}&order=groupid.desc`);
+                const response = await fetch(process.env.VUE_APP_API + `/rents?renteeid=eq.${this.userId.renteeid}&order=groupid.desc`);
                 if (response.ok) {
                     const responseJson = await response.json();
                     responseJson.forEach(e => {
@@ -89,6 +91,7 @@
 
 
         async mounted() {
+            console.log(this.userId)
             await this.getRents();
         }
     }

@@ -9,10 +9,11 @@
                 </div>
             </div>
         </div>
+        <Graphs :groupid= "parseInt(groupid)"></Graphs>
+
         <div id="terminate" class="bottom1">
             <button v-if="notTerminated()" v-on:click="terminateRent">Terminate Rent</button>
         </div>
-        <Graphs :groupid= "parseInt(groupid)"></Graphs>
         <div class="goBack">
             <button v-on:click="goBack">Go Back</button>
         </div>
@@ -209,7 +210,7 @@
         text-align: right;
         float: right;
         margin-left: 85%;
-        position: absolute;
+        position: relative;
         bottom: 0px;
 
     }
